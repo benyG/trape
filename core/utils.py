@@ -14,6 +14,7 @@
 import random
 import hashlib
 import threading
+import re
 import sys
 import os
 import socket
@@ -22,6 +23,10 @@ import requests, json
 from colorama import init , Style,Fore
 import http.client
 init()
+
+# Commands available for the interactive shell autocompletion.
+# Kept empty by default so the readline completer never raises a NameError.
+commands = []
 
 class utils:
     # Functions 1to get is right
@@ -144,6 +149,43 @@ class utils:
         except Exception as e:
             c.close()
             return False
+
+    # Parse an User-Agent string into (platform, browser, version).
+    # Werkzeug removed its built-in UA parsing (2.1+), so request.user_agent
+    # no longer exposes .platform/.browser/.version. We resolve them here to
+    # keep the victim profiling feature working.
+    @staticmethod
+    def parseUserAgent(ua_string):
+        ua = str(ua_string)
+        ua_l = ua.lower()
+
+        platform = 'unknown'
+        for key, name in (('windows', 'windows'), ('android', 'android'),
+                          ('iphone', 'iphone'), ('ipad', 'ipad'),
+                          ('mac os', 'macos'), ('macintosh', 'macos'),
+                          ('cros', 'chromeos'), ('linux', 'linux')):
+            if key in ua_l:
+                platform = name
+                break
+
+        browser = 'unknown'
+        version = ''
+        patterns = (
+            ('edge', r'edg(?:e|a|ios)?/([0-9.]+)'),
+            ('opera', r'(?:opr|opera)/([0-9.]+)'),
+            ('firefox', r'(?:firefox|fxios)/([0-9.]+)'),
+            ('chrome', r'(?:chrome|crios)/([0-9.]+)'),
+            ('safari', r'version/([0-9.]+)(?:.*safari)'),
+            ('msie', r'(?:msie |rv:)([0-9.]+)'),
+        )
+        for name, pat in patterns:
+            m = re.search(pat, ua_l)
+            if m:
+                browser = name
+                version = m.group(1)
+                break
+
+        return platform, browser, version
 
     # Goo.gl shortener service
     @staticmethod

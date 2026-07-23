@@ -91,5 +91,4 @@ if __name__ == 'core.sockets':
         socketio.run(app, host= '0.0.0.0', port=trape.app_port, debug=False)
     except KeyboardInterrupt:
         socketio.stop()
-        trape.validateLicense.terminate()
         sys.exit(0)
