@@ -20,6 +20,7 @@
 #
 ###############################################
 import os                                     #
+import platform                               #
 from core.utils import utils                  #
 from core.trape import Trape                  #
 from core.db import Database                  #
@@ -53,7 +54,7 @@ if generateData.firstTime:
     utils.Go(utils.Color['whiteBold'] + " @@@@@@@@@@@@@@@@@@@@@@@@  ") 
     utils.Go(utils.Color['whiteBold'] + "  @@@@@@@@@@@@@@@@@@@@@@  ") 
     utils.Go("\t" + utils.Color['white'] + "--" + " " + "v" + utils.Color['redBold'] + "2.0" + utils.Color['white'] + " " + "--" + "\n" + utils.Color['white'])
-    utils.Go(utils.Color['whiteBold'] + "WELCOME " + utils.Color['greenBold'] + os.uname()[1].upper() + utils.Color['whiteBold'] + " TO TRAPE" + utils.Color['white'])
+    utils.Go(utils.Color['whiteBold'] + "WELCOME " + utils.Color['greenBold'] + platform.node().upper() + utils.Color['whiteBold'] + " TO TRAPE" + utils.Color['white'])
     utils.Go("------")
     utils.Go("This is a exclusive version for researchers, or professionals \nwho are dedicated to research, we hope you enjoy." + "\n")
     utils.Go(utils.Color['whiteBold'] + "DISCLAIMER" + utils.Color['white'])
