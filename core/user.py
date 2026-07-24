@@ -12,7 +12,6 @@
 # Copyright 2018 by Jose Pino (@jofpin) / <jofpin@gmail.com>
 #**
 import time
-from core.dependence import urllib2
 from flask import Flask, render_template, session, request, json, Response
 from core.user_objects import *
 import core.stats
@@ -22,6 +21,7 @@ import os
 import sys
 import platform
 import urllib
+import urllib.request
 import requests
 from multiprocessing import Process
 """

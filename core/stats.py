@@ -11,13 +11,13 @@
 #
 # Copyright 2018 by Jose Pino (@jofpin) / <jofpin@gmail.com>
 #**
-from core.dependence import urllib2
 import sys
 import os
 from flask import Flask, render_template, session, request, json, redirect, url_for, send_from_directory
 from flask_cors import CORS
 from trape import Trape
 import urllib
+import urllib.request
 from core.db import Database
 
 # Main parts, to generate relationships among others

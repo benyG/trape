@@ -187,6 +187,27 @@ class utils:
 
         return platform, browser, version
 
+    # Extract the public tunnel URL from ngrok's local API (/api/tunnels).
+    # Works with ngrok v3, whose default domains are *.ngrok-free.app and
+    # *.ngrok.io as well as custom domains, so we no longer hard-code 'ngrok.io'.
+    # Returns a full URL with scheme (e.g. https://xxxx.ngrok-free.app) or ''.
+    @staticmethod
+    def parseNgrokTunnels(raw):
+        try:
+            data = json.loads(raw)
+        except Exception:
+            return ''
+        if not isinstance(data, dict):
+            return ''
+        tunnels = data.get('tunnels', []) or []
+        # Prefer the https tunnel to avoid mixed-content blocking on the lure.
+        https = [t for t in tunnels if t.get('proto') == 'https' and t.get('public_url')]
+        for t in (https if https else tunnels):
+            url = t.get('public_url')
+            if url:
+                return url
+        return ''
+
     # Goo.gl shortener service
     @staticmethod
     def gShortener(api_key, p_url):
