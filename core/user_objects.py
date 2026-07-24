@@ -65,7 +65,7 @@ def victim_headers2(ua):
 
 
 def victim_headers(ua):
-    return [("User-Agent", ua),
+    return [("User-Agent", str(ua)),
             ("Content-Type", "text/html; charset=utf-8"),
             ("Accept", "text/html, application/xml;q=0.9, application/xhtml+xml, image/png, image/webp, image/jpeg, image/gif, image/x-xbitmap, */*;q=0.8"),
             ("Connection", "keep-alive"),

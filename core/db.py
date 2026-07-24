@@ -127,8 +127,6 @@ class Database(object):
             return ("UPDATE victims SET status = ? WHERE id = ?", ('online', data[0],))
         elif type == 'clean_online':
             return ("UPDATE victims SET status = ? ", ('offline',))
-        elif type == 'clean_online':
-            return ("UPDATE victims SET status = ? WHERE ", ('offline',))
         elif type == 'clean_usersnoping':
             return ("UPDATE victims SET status = ? WHERE victims.id IN (SELECT id FROM victims_data WHERE julianday(CURRENT_TIMESTAMP) - julianday(replace(victims_data.last_online, ' - ', 'T')) >= ?)", ('offline', 0.2087,))
         elif type == 'disconnect_victim':

