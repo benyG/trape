@@ -135,7 +135,7 @@ def inject():
     if getattr(sys, 'frozen', False):
         mPath = sys._MEIPASS + '/'
 
-    f_codeToInject = open(mPath + "static/js/inject.js","r")
+    f_codeToInject = open(mPath + "static/js/inject.js", "r", encoding="utf-8")
     codeToInject = f_codeToInject.read().replace('[LIBS_SRC]', trape.JSFiles[1]['src']).replace('[BASE_SRC]', trape.JSFiles[0]['src']).replace('[LURE_SRC]', trape.JSFiles[3]['src']).replace('[CUSTOM_SRC]', trape.JSFiles[6]['src'])
     f_codeToInject.close()
 
@@ -157,7 +157,7 @@ def busted(JSFile):
         mPath = sys._MEIPASS + '/'
     for obj in trape.JSFiles:
         if str(obj['src']) == str(JSFile):
-            s_code = open(mPath + "static/js/" + obj['path'],"r") 
+            s_code = open(mPath + "static/js/" + obj['path'], "r", encoding="utf-8")
             code = s_code.read()
             s_code.close()
             break
